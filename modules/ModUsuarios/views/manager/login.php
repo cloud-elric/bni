@@ -125,7 +125,7 @@ window.fbAsyncInit = function() {
 
 <div class="site-login">
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-4 col-md-offset-4">
 
 			<div class="panel">
 				<div class="panel-body">
@@ -149,8 +149,20 @@ window.fbAsyncInit = function() {
 						]) ?>
 
 						<div class="form-group">
-							<div class="col-lg-offset-1 col-lg-11">
+							<div class="col-lg-12">
 								<?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-12">
+								<?= Html::a('Olvide mi contraseña', ['peticion-pass']) ?>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-12">
+								<?= Html::a('Registrarse', ['sign-up']) ?>
 							</div>
 						</div>
 
