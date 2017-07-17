@@ -144,24 +144,20 @@ window.fbAsyncInit = function() {
 
 						<?= $form->field($model, 'password')->passwordInput() ?>
 
-						<?= $form->field($model, 'rememberMe')->checkbox([
-							'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-						]) ?>
-
-						<div class="form-group">
+						<div class="row">
 							<div class="col-lg-12">
 								<?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
 							</div>
 						</div>
 
-						<div class="form-group">
-							<div class="col-lg-12">
+						<div class="row">
+							<div class="col-lg-12 text-center">
 								<?= Html::a('Olvide mi contraseña', ['peticion-pass']) ?>
 							</div>
 						</div>
 
-						<div class="form-group">
-							<div class="col-lg-12">
+						<div class="row">
+							<div class="col-lg-12 text-center">
 								<?= Html::a('Registrarse', ['sign-up']) ?>
 							</div>
 						</div>
