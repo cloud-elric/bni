@@ -132,4 +132,20 @@ class SiteController extends Controller
 
         return $this->render("dash-board");
     }
+
+    public function actionListAddLead(){
+
+        return $this->render("list-add-lead");
+    }
+
+    public function actionGetLead(){
+        return $this->render("get-lead");
+    }
+
+    public function actionAddLead($token=null){
+
+        return $this->render("add-lead");
+    }
+
+    
 }
