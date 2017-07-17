@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\modules\ModUsuarios\models\EntUsuarios;
+use app\models\EntLeads;
 
 class SiteController extends Controller
 {
@@ -129,21 +131,23 @@ class SiteController extends Controller
     * Dashboard
     */
     public function actionDashBoard(){
-
+        $idUsuario = Yii::$app->user->identity->id_usuario;
+        // @todo mandar cuantas leads completos e incompletos tiene el usuario
         return $this->render("dash-board");
     }
 
     public function actionListAddLead(){
-
-        return $this->render("list-add-lead");
+        $empresas = EntUsuarios::find()->where('b_habilitado=1')->all();
+        return $this->render("list-add-lead", ['empresas', $empresas]);
     }
 
     public function actionGetLead(){
+
         return $this->render("get-lead");
     }
 
     public function actionAddLead($token=null){
-
+         $lead = new EntLeads();
         return $this->render("add-lead");
     }
 
