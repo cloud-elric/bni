@@ -69,6 +69,17 @@ class LoginForm extends Model {
 				] 
 		];
 	}
+
+	/**
+	* Labels del modelo
+	*/
+	public function attributeLabels() {
+		return [ 
+				'username' => 'Email',
+				'password' => 'Contraseña',
+				'rememberMe' => 'Recordarme', 
+		];
+	}
 	
 	/**
 	 * Validates the password.

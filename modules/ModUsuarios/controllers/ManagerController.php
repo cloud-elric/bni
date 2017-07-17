@@ -16,7 +16,7 @@ use app\modules\ModUsuarios\models\EntUsuariosFacebook;
  * Default controller for the `musuarios` module
  */
 class ManagerController extends Controller {
-	
+	public $layout = '@app/views/layouts/mainBlank';
 	/**
 	 * Registrar usuario en la base de datos
 	 */
