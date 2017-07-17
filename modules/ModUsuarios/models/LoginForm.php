@@ -31,6 +31,7 @@ class LoginForm extends Model {
 								'password' 
 						],
 						'required',
+						'message'=>"Campo requerido",
 						'on' => 'login' 
 				],
 				// username es requerido para recuperar la contraseña
