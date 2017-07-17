@@ -123,4 +123,13 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+
+    /**
+    * Dashboard
+    */
+    public function actionDashBoard(){
+
+        return $this->render("dash-board");
+    }
 }
