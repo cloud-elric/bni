@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\modules\ModUsuarios\models\EntUsuarios;
 
 /**
  * This is the model class for table "ent_leads".
@@ -42,8 +43,8 @@ class EntLeads extends \yii\db\ActiveRecord
             [['fch_creacion', 'fch_atencion_lead'], 'safe'],
             [['txt_nombre_contacto'], 'string', 'max' => 100],
             [['txt_numero_contacto'], 'string', 'max' => 12],
-            [['id_usuario_lead_destino'], 'exist', 'skipOnError' => true, 'targetClass' => ModUsuariosEntUsuarios::className(), 'targetAttribute' => ['id_usuario_lead_destino' => 'id_usuario']],
-            [['id_usuario_lead_origen'], 'exist', 'skipOnError' => true, 'targetClass' => ModUsuariosEntUsuarios::className(), 'targetAttribute' => ['id_usuario_lead_origen' => 'id_usuario']],
+            [['id_usuario_lead_destino'], 'exist', 'skipOnError' => true, 'targetClass' => EntUsuarios::className(), 'targetAttribute' => ['id_usuario_lead_destino' => 'id_usuario']],
+            [['id_usuario_lead_origen'], 'exist', 'skipOnError' => true, 'targetClass' => EntUsuarios::className(), 'targetAttribute' => ['id_usuario_lead_origen' => 'id_usuario']],
         ];
     }
 

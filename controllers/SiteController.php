@@ -15,6 +15,7 @@ use app\modules\ModUsuarios\models\Utils;
 
 class SiteController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -138,7 +139,8 @@ class SiteController extends Controller
     }
 
     public function actionListAddLead(){
-        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->all();
+        $idUser = Yii::$app->user->identity->id_usuario;
+        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->andWhere(['!=', 'id_usuario', $idUser])->all();
         return $this->render("list-add-lead", [
             'empresas' => $empresas
         ]);
@@ -149,12 +151,37 @@ class SiteController extends Controller
         return $this->render("get-lead");
     }
 
-    public function actionAddLead($token=null){
-         $lead = new EntLeads();
+    public function actionAddLead(){
+        $lead = new EntLeads();
+        $idUser = Yii::$app->user->identity->id_usuario;
+
+        if(isset($_POST['telefono']) && isset($_POST['nombre']) && isset($_POST['descripcion']) && isset($_POST['destino'])){
+            $lead->id_usuario_lead_destino = $_POST['destino'];
+            $lead->id_usuario_lead_origen = $idUser;
+            $lead->txt_descripcion = $_POST['descripcion'];
+            $lead->txt_token = "lead_" . md5 ( uniqid ( "lead_" ) ) . uniqid ();;
+            $lead->txt_nombre_contacto = $_POST['nombre'];
+            $lead->txt_numero_contacto = $_POST['telefono'];
+            $lead->b_habilitado = 1;
+
+            if($lead->save()){
+                echo "Correcto";
+                $this->primerEmail($lead->txt_token);
+                exit();
+            }else{
+                echo "<pre>";
+                print_r($lead->errors);
+                echo "</pre>";
+                exit();
+                echo "Inorrecto";
+                exit();
+            }
+        }
+
         return $this->render("add-lead");
     }
 
-    public function actionPrimerEmail($token = 'asdf4erty56456rt'){
+    private function primerEmail($token = null){
         $lead = EntLeads::find()->where(['txt_token'=>$token])->one();
         $user = EntUsuarios::find()->where(['id_usuario'=>$lead->id_usuario_lead_destino])->one();
 
@@ -162,23 +189,18 @@ class SiteController extends Controller
 		$utils = new Utils();
 		// Parametros para el email
 		$parametrosEmail = [
-            'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/prueba?token=' . $lead->txt_token ]),
+            'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/ver-leads?token=' . $lead->txt_token ]),
 		    'user' => $user->getNombreCompleto(),
             'nombre_contacto' => $lead->txt_nombre_contacto,
             'numero_contacto' => $lead->txt_numero_contacto
         ];
-
-        /*echo $lead->txt_nombre_contacto;
-        echo $user->txt_email;
-        var_dump($parametrosEmail);
-        exit();*/
 
 		// Envio de correo electronico
 		$utils->sendPrimerEmail($user->txt_email,$parametrosEmail);
         echo "qwertyuiop";
     }
 
-    public function actionPrueba($token = null){
+    public function actionVerLeads($token = null){
         echo "Entro al action de prueba tok= " . $token;
     }
 }
