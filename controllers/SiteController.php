@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use app\models\EntLeads;
+use app\modules\ModUsuarios\models\Utils;
 
 class SiteController extends Controller
 {
@@ -151,5 +152,31 @@ class SiteController extends Controller
         return $this->render("add-lead");
     }
 
-    
+    public function actionPrimerEmail($token = 'asdf4erty56456rt'){
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->one();
+        $user = EntUsuarios::find()->where(['id_usuario'=>$lead->id_usuario_lead_destino])->one();
+
+        // Enviar correo de activación
+		$utils = new Utils();
+		// Parametros para el email
+		$parametrosEmail = [
+            'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/prueba/' . $lead->txt_token ]),
+		    'user' => $user->getNombreCompleto(),
+            'nombre_contacto' => $lead->txt_nombre_contacto,
+            'numero_contacto' => $lead->txt_numero_contacto
+        ];
+
+        /*echo $lead->txt_nombre_contacto;
+        echo $user->txt_email;
+        var_dump($parametrosEmail);
+        exit();*/
+
+		// Envio de correo electronico
+		$utils->sendPrimerEmail($user->txt_email,$parametrosEmail);
+        echo "qwertyuiop";
+    }
+
+    public function actionPrueba($token = null){
+        echo "Entro al action de prueba tok= " . $token;
+    }
 }

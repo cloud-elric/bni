@@ -80,4 +80,8 @@ class EntLeads extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ModUsuariosEntUsuarios::className(), ['id_usuario' => 'id_usuario_lead_origen']);
     }
+
+    public function getByToken($token){
+        return EntLeads::find()->where(['txt_token'=>$token])->one();
+    }
 }
