@@ -138,8 +138,10 @@ class SiteController extends Controller
     }
 
     public function actionListAddLead(){
-        $empresas = EntUsuarios::find()->where('b_habilitado=1')->all();
-        return $this->render("list-add-lead", ['empresas', $empresas]);
+        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->all();
+        return $this->render("list-add-lead", [
+            'empresas' => $empresas
+        ]);
     }
 
     public function actionGetLead(){
@@ -160,7 +162,7 @@ class SiteController extends Controller
 		$utils = new Utils();
 		// Parametros para el email
 		$parametrosEmail = [
-            'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/prueba/' . $lead->txt_token ]),
+            'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/prueba?token=' . $lead->txt_token ]),
 		    'user' => $user->getNombreCompleto(),
             'nombre_contacto' => $lead->txt_nombre_contacto,
             'numero_contacto' => $lead->txt_numero_contacto
