@@ -24,10 +24,16 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => [
+                    'logout',
+                    'ver-Leads'
+                    ],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => [
+                            'logout',
+                            'ver-Leads'
+                            ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -152,6 +158,7 @@ class SiteController extends Controller
     }
 
     public function actionAddLead(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $lead = new EntLeads();
         $idUser = Yii::$app->user->identity->id_usuario;
 
@@ -165,20 +172,13 @@ class SiteController extends Controller
             $lead->b_habilitado = 1;
 
             if($lead->save()){
-                echo "Correcto";
                 $this->primerEmail($lead->txt_token);
-                exit();
+                return ['status'=>'success'];
+
             }else{
-                echo "<pre>";
-                print_r($lead->errors);
-                echo "</pre>";
-                exit();
-                echo "Inorrecto";
-                exit();
+                return ['status'=>'error'];
             }
         }
-
-        return $this->render("add-lead");
     }
 
     private function primerEmail($token = null){
@@ -193,7 +193,7 @@ class SiteController extends Controller
 		    'user' => $user->getNombreCompleto(),
             'nombre_contacto' => $lead->txt_nombre_contacto,
             'numero_contacto' => $lead->txt_numero_contacto,
-            'txt_descripcion' => $lead->txt_descripcion
+            'descripcion' => $lead->txt_descripcion
         ];
 
 		// Envio de correo electronico
