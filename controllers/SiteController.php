@@ -26,13 +26,15 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'only' => [
                     'logout',
-                    'ver-Leads'
+                    'ver-leads',
+                    'add-lead'
                     ],
                 'rules' => [
                     [
                         'actions' => [
                             'logout',
-                            'ver-Leads'
+                            'ver-leads',
+                            'add-lead'
                             ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -172,9 +174,9 @@ class SiteController extends Controller
             $lead->b_habilitado = 1;
 
             if($lead->save()){
-                $this->primerEmail($lead->txt_token);
-                return ['status'=>'success'];
-
+                if($this->primerEmail($lead->txt_token)){
+                    return ['status'=>'success'];
+                }
             }else{
                 return ['status'=>'error'];
             }
