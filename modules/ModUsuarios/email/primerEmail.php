@@ -16,7 +16,7 @@
 		<p> Datos</p>
 		<p>Nombre de contacto <?= $nombre_contacto ?></p>
 		<p>Numero de contacto <?= $numero_contacto ?></p>
-		<p><a href='<?=$url?>'>link</a></p>
+		<p><a href='<?=$url?>'>Atender</a></p>
 		<p>-Equipo 2 Geeks one Monkey</p>
 	</section>
 	<footer> </footer>
