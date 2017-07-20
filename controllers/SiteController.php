@@ -192,7 +192,8 @@ class SiteController extends Controller
             'url' => Yii::$app->urlManager->createAbsoluteUrl(['site/ver-leads?token=' . $lead->txt_token ]),
 		    'user' => $user->getNombreCompleto(),
             'nombre_contacto' => $lead->txt_nombre_contacto,
-            'numero_contacto' => $lead->txt_numero_contacto
+            'numero_contacto' => $lead->txt_numero_contacto,
+            'txt_descripcion' => $lead->txt_descripcion
         ];
 
 		// Envio de correo electronico
@@ -201,6 +202,10 @@ class SiteController extends Controller
     }
 
     public function actionVerLeads($token = null){
-        echo "Entro al action de prueba tok= " . $token;
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->one();
+
+        return $this->render("view-lead",[
+            'lead' => $lead
+        ]);        
     }
 }
