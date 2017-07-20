@@ -29,7 +29,7 @@ class ManagerController extends Controller {
 		if ($model->load ( Yii::$app->request->post () )) {
 			
 			if ($user = $model->signup ()) {
-				
+
 				if (Yii::$app->params ['modUsuarios'] ['mandarCorreoActivacion']) {
 					
 					$activacion = new EntUsuariosActivacion ();
@@ -50,8 +50,8 @@ class ManagerController extends Controller {
 					] );
 				} else {
 					
-					if (Yii::$app->getUser ()->login ( $user )) {
-						return $this->goHome ();
+					if (Yii::$app->getUser()->login( $user )) {
+						return $this->goHome();
 					}
 				}
 			}
