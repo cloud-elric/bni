@@ -21,7 +21,7 @@
                 <h4 class="modal-title" id="myModalLabel">Generar nuevo lead</h4>
             </div>
             <div class="modal-body">
-                <form action="<?= Yii::$app->urlManager->createAbsoluteUrl(['site/add-lead']) ?>" method="POST">
+                <form id="form_datos" action="<?= Yii::$app->urlManager->createAbsoluteUrl(['site/add-lead']) ?>" method='post'>
                     <div class="form-group">
                         <label>Telefono</label>
                         <input type="text" name="telefono" class="form-control">
@@ -37,7 +37,7 @@
                     </div>
                    <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button id="js_form_submit" type="submit" class="btn btn-primary ">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -46,8 +46,43 @@
 </div>
 
 <script>
-    $('.js_click').on('click', function(){
+    $('.js_click').on('click', function(e){
+        e.preventDefault()
         var id = $(this).data('id');
         $('.hidden-input').val(id);
     });
+
+    $('#js_form_submit').on('click', function(e) {
+        e.preventDefault();
+        var form = $('#form_datos');
+        if (form.find('.has-error').length) {
+		    return false;
+        }
+
+        $.ajax({
+            url : form.attr('action'),
+            type : 'post',
+            data: form.serialize(),
+            success : function(response) {
+                if (response.status == 'success') {
+                    swal({
+                        title: "Email enviado correctamente",
+                        text: "Se a enviado un email para preocesar su pedido",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Correcto",
+                        closeOnConfirm: false,
+                        },
+                        function(isConfirm){
+                        if (isConfirm) {
+                            window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['site/dash-board']) ?>";
+                        }
+                    });
+                }else{
+                    swal("Cancelado", "Error al enviar el email.", "error");
+                }
+            }
+        });
+	});
 </script>

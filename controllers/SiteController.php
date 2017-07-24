@@ -24,10 +24,20 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => [
+                    'logout',
+                    'ver-leads',
+                    'add-lead',
+                    'list-add-lead'
+                    ],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => [
+                            'logout',
+                            'ver-leads',
+                            'add-lead',
+                            'list-add-lead'
+                            ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -152,6 +162,7 @@ class SiteController extends Controller
     }
 
     public function actionAddLead(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $lead = new EntLeads();
         $idUser = Yii::$app->user->identity->id_usuario;
 
@@ -165,20 +176,13 @@ class SiteController extends Controller
             $lead->b_habilitado = 1;
 
             if($lead->save()){
-                echo "Correcto";
-                $this->primerEmail($lead->txt_token);
-                exit();
+                if($this->primerEmail($lead->txt_token)){
+                    return ['status'=>'success'];
+                }
             }else{
-                echo "<pre>";
-                print_r($lead->errors);
-                echo "</pre>";
-                exit();
-                echo "Inorrecto";
-                exit();
+                return ['status'=>'error'];
             }
         }
-
-        return $this->render("add-lead");
     }
 
     private function primerEmail($token = null){
@@ -193,19 +197,59 @@ class SiteController extends Controller
 		    'user' => $user->getNombreCompleto(),
             'nombre_contacto' => $lead->txt_nombre_contacto,
             'numero_contacto' => $lead->txt_numero_contacto,
-            'txt_descripcion' => $lead->txt_descripcion
+            'descripcion' => $lead->txt_descripcion
         ];
 
 		// Envio de correo electronico
-		$utils->sendPrimerEmail($user->txt_email,$parametrosEmail);
-        echo "qwertyuiop";
+		if($utils->sendPrimerEmail($user->txt_email,$parametrosEmail)){
+            return true;
+        }else{
+            return false;
+        }
+        
     }
 
     public function actionVerLeads($token = null){
-        $lead = EntLeads::find()->where(['txt_token'=>$token])->one();
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->andWhere(['b_habilitado'=>1])->andWhere(['b_atendido'=>0])->one();
+        $idUser = Yii::$app->user->identity->id_usuario;
 
         return $this->render("view-lead",[
-            'lead' => $lead
+            'lead' => $lead,
+            'idUser' => $idUser
         ]);        
+    }
+
+    public function actionAtenderLead($token = null){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->andWhere(['b_habilitado'=>1])->andWhere(['b_atendido'=>0])->one();
+        $user = EntUsuarios::find()->where(['id_usuario'=>$lead->id_usuario_lead_origen])->one();
+
+        if($lead){
+            $lead->b_habilitado = 0;
+            $lead->b_atendido = 1;
+            $lead->fch_atencion_lead = date('Y-m-d g:i:s');
+            if($lead->save()){
+                // Enviar correo de activación
+                $utils = new Utils();
+                // Parametros para el email
+                $parametrosEmail = [
+                    'user' => $user->getNombreCompleto(),
+                    'nombre_contacto' => $lead->txt_nombre_contacto,
+                    'numero_contacto' => $lead->txt_numero_contacto,
+                    'descripcion' => $lead->txt_descripcion
+                ];
+
+                // Envio de correo electronico
+                if($utils->sendEmailAtendido($user->txt_email,$parametrosEmail)){
+
+                    return [
+                        'status' => 'success'
+                    ];
+                }
+            }
+        }
+        return [
+            'status' => 'error'
+        ]; 
     }
 }

@@ -444,11 +444,7 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 		$archivoGuardado = $user->imagen->saveAs ( Yii::$app->params ['modUsuarios'] ['pathImageProfile'] . $user->txt_imagen );
 		
 		// Si esta activada la opcion de mandar correo de activación el usuario estara en status pendiente
-		if (Yii::$app->params ['modUsuarios'] ['mandarCorreoActivacion']) {
-			$user->id_status = self::STATUS_PENDIENTED;
-		} else {
-			$user->id_status = self::STATUS_ACTIVED;
-		}
+		$user->id_status = self::STATUS_ACTIVED;
 		
 		if($usGuandado){
 			return $user;

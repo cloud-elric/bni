@@ -65,8 +65,15 @@ class Utils {
 	public function sendPrimerEmail($email,$parametrosEmail) {
 		
 		// Envia el correo electronico
-		return $this->sendEmail ( '@app/modules/ModUsuarios/email/primerEmail', '@app/modules/ModUsuarios/email/layouts/text', Yii::$app->params ['modUsuarios'] ['email'] ['emailActivacion'],$email, Yii::$app->params ['modUsuarios'] ['email'] ['subjectActivacion'], $parametrosEmail );
+		return $this->sendEmail ( '@app/modules/ModUsuarios/email/primerEmail', '@app/modules/ModUsuarios/email/layouts/text', Yii::$app->params ['modUsuarios'] ['email'] ['emailActivacion'],$email, 'Tienes un lead de BNI', $parametrosEmail );
 	}
+
+	public function sendEmailAtendido($email,$parametrosEmail) {
+		
+		// Envia el correo electronico
+		return $this->sendEmail ( '@app/modules/ModUsuarios/email/emailAtendido', '@app/modules/ModUsuarios/email/layouts/text', Yii::$app->params ['modUsuarios'] ['email'] ['emailActivacion'],$email, 'Lead atendido en BNI', $parametrosEmail );
+	}
+
 
 	/**
 	 * Envia mensaje de correo electronico
