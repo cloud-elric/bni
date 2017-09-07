@@ -11,6 +11,8 @@ use app\modules\ModUsuarios\models\Utils;
 use app\modules\ModUsuarios\models\EntUsuariosActivacion;
 use app\modules\ModUsuarios\models\EntUsuariosCambioPass;
 use app\modules\ModUsuarios\models\EntUsuariosFacebook;
+use yii\helpers\Url;
+
 
 /**
  * Default controller for the `musuarios` module
@@ -164,7 +166,9 @@ class ManagerController extends Controller {
 		$model->scenario = 'login';
 		if ($model->load ( Yii::$app->request->post () ) && $model->login ()) {
 			
-			return $this->goBack ();
+			$this->redirect ( [ 
+				'site/dash-board' 
+			]);
 		}
 		return $this->render ( 'login', [ 
 				'model' => $model 

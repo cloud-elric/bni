@@ -14,7 +14,7 @@
   <?php
     if($lead->id_usuario_lead_destino == $idUser){
   ?>
-      <button id="js_boton_atender" class="btn btn-primary" data-url="<?= Yii::$app->urlManager->createAbsoluteUrl(['site/atender-lead?token=']) . $lead->txt_token ?>">Atender</button>
+      <button id="js_boton_atender" class="btn btn-primary" data-url="<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/atender-lead?token=']) . $lead->txt_token ?>">Atender</button>
   <?php
     }
   ?>
@@ -49,7 +49,7 @@
               },
               function(isConfirm){
               if (isConfirm) {
-                  window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['site/dash-board']) ?>";
+                  window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/dash-board']) ?>";
               }
             });
           }else{

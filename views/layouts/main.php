@@ -47,10 +47,9 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Login', 'url' => ['/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
@@ -60,6 +59,11 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
+            ),
+            Yii::$app->user->isGuest ? (
+                ['label' => 'Registrarse', 'url' => ['/sign-up']]
+            ) : (
+                ''
             )
         ],
     ]);

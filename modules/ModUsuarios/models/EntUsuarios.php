@@ -94,13 +94,13 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 								'password'
 						],
 						StrengthValidator::className (),
-						'min' => 10,
+						/*'min' => 10,
 						'digit' => 2,
 						'special' => 2,
 						'upper'=>2,
 						'lower'=>2,
 						'special'=>2,
-						'hasUser'=>false,
+						'hasUser'=>false,*/
 						
 				],
 				[ 
