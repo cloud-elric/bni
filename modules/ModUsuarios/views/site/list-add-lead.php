@@ -21,7 +21,7 @@
                 <h4 class="modal-title" id="myModalLabel">Generar nuevo lead</h4>
             </div>
             <div class="modal-body">
-                <form id="form_datos" action="<?= Yii::$app->urlManager->createAbsoluteUrl(['site/add-lead']) ?>" method='post'>
+                <form id="form_datos" action="<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/add-lead']) ?>" method='post'>
                     <div class="form-group">
                         <label>Telefono</label>
                         <input type="text" name="telefono" class="form-control">
@@ -76,7 +76,7 @@
                         },
                         function(isConfirm){
                         if (isConfirm) {
-                            window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['site/dash-board']) ?>";
+                            window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/dash-board']) ?>";
                         }
                     });
                 }else{
