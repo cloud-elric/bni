@@ -94,7 +94,7 @@ class LoginForm extends Model {
 	public function validatePassword($attribute, $params) {
 		if (! $this->hasErrors ()) {
 			$user = $this->getUser ();
-			
+
 			if (! $user || ! $user->validatePassword ( $this->password )) {
 				$this->addError ( $attribute, 'Incorrect username or password.' );
 			}
@@ -108,7 +108,7 @@ class LoginForm extends Model {
 		$this->userEncontrado = $this->getUser ();
 		
 		if (empty($this->userEncontrado)) {
-			$this->addError ( $attribute, 'No existe una cuenta asociada al corro electronico ingresado.' );
+			$this->addError ( $attribute, 'No existe una cuenta asociada al correo electronico ingresado.' );
 		}
 	}
 	
@@ -131,6 +131,7 @@ class LoginForm extends Model {
 	 */
 	public function getUser() {
 		if ($this->_user === false) {
+			
 			$this->_user = EntUsuarios::findByEmail ( $this->username );
 			
 		}

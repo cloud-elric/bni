@@ -53,7 +53,10 @@ class ManagerController extends Controller {
 				} else {
 					
 					if (Yii::$app->getUser()->login( $user )) {
-						return $this->goHome();
+						//return $this->goHome();
+						$this->redirect ( [ 
+							'site/dash-board' 
+						]);
 					}
 				}
 			}
@@ -166,9 +169,10 @@ class ManagerController extends Controller {
 		$model->scenario = 'login';
 		if ($model->load ( Yii::$app->request->post () ) && $model->login ()) {
 			
-			$this->redirect ( [ 
-				'site/dash-board' 
-			]);
+			//$this->redirect ( [ 
+			//	'site/dash-board' 
+			//]);
+			return $this->goBack();
 		}
 		return $this->render ( 'login', [ 
 				'model' => $model 
