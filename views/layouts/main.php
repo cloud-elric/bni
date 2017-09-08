@@ -49,6 +49,18 @@ AppAsset::register($this);
             ['label' => 'Home', 'url' => ['/site/index']],
             
             Yii::$app->user->isGuest ? (
+                ['label' => 'Registrarse', 'url' => ['/sign-up']]
+            ) : (
+                '<li>'
+                . Html::beginForm(['modUsuarios/site/dash-board'], 'post')
+                . Html::submitButton(
+                    'Dashboard',
+                    ['class' => 'btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
+            ),
+            Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/login']]
             ) : (
                 '<li>'
@@ -59,11 +71,6 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
-            ),
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Registrarse', 'url' => ['/sign-up']]
-            ) : (
-                ''
             )
         ],
     ]);
