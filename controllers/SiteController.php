@@ -11,9 +11,11 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use app\models\EntLeads;
+use app\modules\ModUsuarios\models\Utils;
 
 class SiteController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -22,10 +24,20 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => [
+                    'logout',
+                    'ver-leads',
+                    'add-lead',
+                    'list-add-lead'
+                    ],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => [
+                            'logout',
+                            'ver-leads',
+                            'add-lead',
+                            'list-add-lead'
+                            ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -125,31 +137,4 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
-
-
-    /**
-    * Dashboard
-    */
-    public function actionDashBoard(){
-        $idUsuario = Yii::$app->user->identity->id_usuario;
-        // @todo mandar cuantas leads completos e incompletos tiene el usuario
-        return $this->render("dash-board");
-    }
-
-    public function actionListAddLead(){
-        $empresas = EntUsuarios::find()->where('b_habilitado=1')->all();
-        return $this->render("list-add-lead", ['empresas', $empresas]);
-    }
-
-    public function actionGetLead(){
-
-        return $this->render("get-lead");
-    }
-
-    public function actionAddLead($token=null){
-         $lead = new EntLeads();
-        return $this->render("add-lead");
-    }
-
-    
 }

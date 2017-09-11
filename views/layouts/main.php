@@ -20,6 +20,15 @@ AppAsset::register($this);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
+
+    <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous">
+    </script>
+    <script src="../js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/sweet-alert.css">
+
     <?php $this->head() ?>
 </head>
 <body>
@@ -38,10 +47,21 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Registrarse', 'url' => ['/sign-up']]
+            ) : (
+                '<li>'
+                . Html::beginForm(['modUsuarios/site/dash-board'], 'post')
+                . Html::submitButton(
+                    'Dashboard',
+                    ['class' => 'btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
+            ),
+            Yii::$app->user->isGuest ? (
+                ['label' => 'Login', 'url' => ['/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
@@ -57,7 +77,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 
-    <div class="container-fluid">
+    <div class="container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>

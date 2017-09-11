@@ -8,6 +8,8 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use app\modules\ModUsuarios\models\Utils;
 use kartik\password\StrengthValidator;
+use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "ent_usuarios".
@@ -18,6 +20,7 @@ use kartik\password\StrengthValidator;
  * @property string $txt_apellido_paterno
  * @property string $txt_apellido_materno
  * @property string $txt_auth_key
+ * @property string $txt_imagen
  * @property string $txt_password_hash
  * @property string $txt_password_reset_token
  * @property string $txt_email
@@ -39,6 +42,8 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 	const STATUS_BLOCKED = 3;
 	public $password;
 	public $repeatPassword;
+	public $repeatEmail;
+	public $imagen;
 	
 	/**
 	 * @inheritdoc
@@ -60,7 +65,10 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 				],
 				[ 
 						'txt_email',
-						'trim' 
+						//'trim',
+						'compare',
+						'compareAttribute' => 'repeatEmail',
+						'on' => 'registerInput'
 				],
 				[ 
 						'txt_username',
@@ -81,20 +89,7 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 						'required',
 						'on' => 'registerInput' 
 				],
-				[ 
-						[ 
-								'password'
-						],
-						StrengthValidator::className (),
-						'min' => 10,
-						'digit' => 2,
-						'special' => 2,
-						'upper'=>2,
-						'lower'=>2,
-						'special'=>2,
-						'hasUser'=>false,
-						
-				],
+				
 				[ 
 						[ 
 								'password',
@@ -145,6 +140,13 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 				],
 				[ 
 						[ 
+								'repeatEmail' 
+						],
+						'required',
+						'on' => 'registerInput'
+				],
+				[ 
+						[ 
 								'txt_email' 
 						],
 						'unique' 
@@ -155,11 +157,28 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 						],
 						'unique' 
 				],
+				[
+					[
+						'txt_imagen'
+					],
+					'string', 'max' => 500
+				],
 				[ 
 						[ 
 								'txt_password_reset_token' 
 						],
 						'unique' 
+				],
+				[
+					[
+						'imagen'
+					],
+					'image',
+					'minWidth' => 250,
+					'maxWidth' => 250,
+					'minHeight' => 250,
+					'maxHeight' => 250,
+					'extensions' => 'png, jpg, jpeg'
 				],
 				[ 
 						[ 
@@ -395,6 +414,8 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 		}
 		
 		$user = new EntUsuarios ();
+		$user->imagen = UploadedFile::getInstance ( $user, 'imagen' );
+
 		$user->txt_token = Utils::generateToken ( 'usr' );
 		$user->txt_username = $this->txt_username;
 		$user->txt_apellido_paterno = $this->txt_apellido_paterno;
@@ -403,15 +424,20 @@ class EntUsuarios extends \yii\db\ActiveRecord implements IdentityInterface
 		$user->setPassword ( $this->password );
 		$user->generateAuthKey ();
 		$user->fch_creacion = Utils::getFechaActual ();
+		$user->txt_imagen = "img_" . md5 ( uniqid ( "img_" ) ) . uniqid () . "." . $user->imagen->extension;
+		$usGuandado = $user->save();
+
+		// Guarda la imagen el el path
+		$archivoGuardado = $user->imagen->saveAs ( Yii::$app->params ['modUsuarios'] ['pathImageProfile'] . $user->txt_imagen );
 		
 		// Si esta activada la opcion de mandar correo de activación el usuario estara en status pendiente
-		if (Yii::$app->params ['modUsuarios'] ['mandarCorreoActivacion']) {
-			$user->id_status = self::STATUS_PENDIENTED;
-		} else {
-			$user->id_status = self::STATUS_ACTIVED;
-		}
+		$user->id_status = self::STATUS_ACTIVED;
 		
-		return $user->save () ? $user : null;
+		if($usGuandado){
+			return $user;
+		}else {
+			return false;
+		}
 	}
 	
 	/**

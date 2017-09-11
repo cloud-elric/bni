@@ -11,6 +11,8 @@ use app\modules\ModUsuarios\models\Utils;
 use app\modules\ModUsuarios\models\EntUsuariosActivacion;
 use app\modules\ModUsuarios\models\EntUsuariosCambioPass;
 use app\modules\ModUsuarios\models\EntUsuariosFacebook;
+use yii\helpers\Url;
+
 
 /**
  * Default controller for the `musuarios` module
@@ -29,7 +31,7 @@ class ManagerController extends Controller {
 		if ($model->load ( Yii::$app->request->post () )) {
 			
 			if ($user = $model->signup ()) {
-				
+
 				if (Yii::$app->params ['modUsuarios'] ['mandarCorreoActivacion']) {
 					
 					$activacion = new EntUsuariosActivacion ();
@@ -50,8 +52,11 @@ class ManagerController extends Controller {
 					] );
 				} else {
 					
-					if (Yii::$app->getUser ()->login ( $user )) {
-						return $this->goHome ();
+					if (Yii::$app->getUser()->login( $user )) {
+						//return $this->goHome();
+						$this->redirect ( [ 
+							'site/dash-board' 
+						]);
 					}
 				}
 			}
@@ -164,7 +169,10 @@ class ManagerController extends Controller {
 		$model->scenario = 'login';
 		if ($model->load ( Yii::$app->request->post () ) && $model->login ()) {
 			
-			return $this->goBack ();
+			//$this->redirect ( [ 
+			//	'site/dash-board' 
+			//]);
+			return $this->goBack();
 		}
 		return $this->render ( 'login', [ 
 				'model' => $model 
