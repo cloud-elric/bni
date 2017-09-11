@@ -55,7 +55,7 @@ class LoginForm extends Model {
 						],
 						'trim' 
 				],
-				['username','email'],
+				['username','email', "on"=>"Formato de email no valido"],
 				
 				// rememberMe must be a boolean value
 				[ 

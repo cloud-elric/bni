@@ -118,3 +118,27 @@ a.desc:after {
 body{
     background: #cecece;
 }
+
+.page{
+    margin-top: 75px;
+}
+
+.dashboard-panel{
+
+}
+
+.dashboard-panel-success{
+
+}
+
+.dashboard-panel-warning{
+
+}
+
+.dashboard-panel-error{
+
+}
+
+.dashboard-panel-primary{
+    
+}
