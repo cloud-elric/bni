@@ -152,7 +152,7 @@ class SiteController extends Controller
 
     public function actionListAddLead(){
         $idUser = Yii::$app->user->identity->id_usuario;
-        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->andWhere(['!=', 'id_usuario', $idUser])->all();
+        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->andWhere(['!=', 'id_usuario', $idUser])->orderBy('txt_username')->all();
         return $this->render("list-add-lead", [
             'empresas' => $empresas
         ]);

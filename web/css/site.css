@@ -114,31 +114,68 @@ a.desc:after {
     outline: none;
 }
 
-/* BNI */
+/* Diseño del sistema BNI */
 body{
-    background: #cecece;
+    background: #e9ebee;
 }
 
 .page{
     margin-top: 75px;
 }
 
-.dashboard-panel{
-
+/* Registrarse*/
+.container-image-profile{
+    background: #e9ebee;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e9ebee;
+    margin-bottom: 15px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.dashboard-panel-success{
-
+.imageProfile{
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
 }
 
-.dashboard-panel-warning{
-
+.container-image-profile label{
+    text-align: center;
+    position: absolute;
+    top: 27px;
+    /* left: 2px; */
+    width: 100%;
+    background: white;
+    color: black !important;
+    padding: 3px;
 }
 
-.dashboard-panel-error{
-
+/************* Lista empresas****************/
+.profile-empresa{
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    display: inline-block;
 }
 
-.dashboard-panel-primary{
-    
+.media-body, .media-left, .media-right {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.nombre-empresa{
+    font-size: 20pt;
 }

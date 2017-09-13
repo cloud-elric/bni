@@ -26,8 +26,7 @@ AppAsset::register($this);
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
         crossorigin="anonymous">
     </script>
-    <script src="../js/sweet-alert.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="../css/sweet-alert.css">
+    
 
     <?php $this->head() ?>
 </head>
@@ -52,7 +51,7 @@ AppAsset::register($this);
                 ['label' => 'Registrarse', 'url' => ['/sign-up']]
             ) : (
                 '<li>'
-                . Html::beginForm(['modUsuarios/site/dash-board'], 'post')
+                . Html::beginForm(['site/dash-board'], 'post')
                 . Html::submitButton(
                     'Dashboard',
                     ['class' => 'btn btn-link logout']
@@ -87,7 +86,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; 2 Geeks one Monkey <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>

@@ -1,17 +1,28 @@
-<?php
-    foreach($empresas as $empresa){
-?>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg js_click" data-toggle="modal" data-target="#myModal" data-id="<?= $empresa->id_usuario ?>">
-            <?= $empresa->txt_username ?>
-        </button>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <ul class="list-group">
+  
+        <?php
+        foreach ($empresas as $empresa) {
+            ?>
+        <li class="list-group-item js_click" data-toggle="modal" data-target="#myModal" data-id="<?= $empresa->id_usuario ?>">
+            <div class="media-left">
+                <div class="profile-empresa" style="background-image:url(<?= Yii::$app->urlManager->createAbsoluteUrl(['uploads/imagenesUsers/']) . "/" . $empresa->txt_imagen ?>)">
+                </div>
+            </div>
+            <div class="media-body text-center">            
+                <label class="nombre-empresa"><?= $empresa->txt_username ?></label>
+            </div>    
+                    
+        </li>        
+            
+        <?php
 
-        <img src="<?= Yii::$app->urlManager->createAbsoluteUrl(['uploads/imagenesUsers/']) . "/" . $empresa->txt_imagen ?>" height="205" width="250">
-        <br/>
-<?php
     }
-?>
-
+    ?>
+      </ul>  
+    </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -32,12 +43,13 @@
                     </div>
                     <div class="form-group">
                         <label>Notas</label>
-                        <input type="text" name="descripcion" class="form-control">
+                        <textarea  name="descripcion" class="form-control">
+                        </textarea>
                         <input type="hidden" name='destino' class='hidden-input'>
                     </div>
                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="js_form_submit" type="submit" class="btn btn-primary ">Save changes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button id="js_form_submit" type="submit" class="btn btn-primary ">Enviar lead</button>
                     </div>
                 </form>
             </div>
