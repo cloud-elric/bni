@@ -79,7 +79,7 @@
                 if (response.status == 'success') {
                     swal({
                         title: "Email enviado correctamente",
-                        text: "Se a enviado un email para preocesar su pedido",
+                        text: "Se a enviado un email con la información del lead",
                         type: "success",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
@@ -88,7 +88,7 @@
                         },
                         function(isConfirm){
                         if (isConfirm) {
-                            window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/dash-board']) ?>";
+                            window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['site/dash-board']) ?>";
                         }
                     });
                 }else{

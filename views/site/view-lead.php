@@ -75,7 +75,7 @@ if ($lead->id_usuario_lead_destino == $idUser) {
               },
               function(isConfirm){
               if (isConfirm) {
-                  window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/dash-board']) ?>";
+                  window.location.href = "<?= Yii::$app->urlManager->createAbsoluteUrl(['site/dash-board']) ?>";
               }
             });
           }else{
