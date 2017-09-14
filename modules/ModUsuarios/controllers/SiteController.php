@@ -12,6 +12,8 @@ use app\models\ContactForm;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use app\models\EntLeads;
 use app\modules\ModUsuarios\models\Utils;
+use yii\data\ActiveDataProvider;
+use app\models\EntLeadsSearch;
 
 class SiteController extends Controller
 {
@@ -145,9 +147,48 @@ class SiteController extends Controller
     * Dashboard
     */
     public function actionDashBoard(){
+        
         $idUsuario = Yii::$app->user->identity->id_usuario;
-        // @todo mandar cuantas leads completos e incompletos tiene el usuario
-        return $this->render("dash-board");
+
+        $searchModel = new EntLeadsSearch();
+        $leadsEnviados = $searchModel->search(Yii::$app->request->queryParams);
+
+        // $leadsEnviados = new ActiveDataProvider([
+        //     'query' => EntLeads::find()->where(['id_usuario_lead_origen'=>$idUsuario]),
+        //     'pagination' => [
+        //         'pageSize' => 2,
+                
+        //     ],
+        // ]);
+
+        return $this->render("leads-enviados", [
+            'leadsEnviados'=>$leadsEnviados,
+            
+            'searchModel'=>$searchModel
+        ]);
+
+        
+
+        $leadsPendientes = new ActiveDataProvider([
+            'query' => EntLeads::find()->where(['id_usuario_lead_destino'=>$idUsuario, "b_atendido"=>0]),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
+        $leadsCompletos = new ActiveDataProvider([
+            'query' => EntLeads::find()->where(['id_usuario_lead_destino'=>$idUsuario, "b_atendido"=>0]),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
+
+
+        return $this->render("dash-board", [
+            'leadsEnviados'=>$leadsEnviados,
+            'leadsPendientes'=>$leadsPendientes,
+            'leadsCompletos'=>$leadsCompletos,
+            'searchModel'=>$searchModel
+        ]);
     }
 
     public function actionListAddLead(){

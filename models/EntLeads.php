@@ -23,6 +23,8 @@ use app\modules\ModUsuarios\models\EntUsuarios;
  */
 class EntLeads extends \yii\db\ActiveRecord
 {
+    public $enviadoNombre;
+    public $recibidoNombre;
     /**
      * @inheritdoc
      */
@@ -55,14 +57,16 @@ class EntLeads extends \yii\db\ActiveRecord
     {
         return [
             'id_lead' => 'Id Lead',
-            'id_usuario_lead_destino' => 'Id Usuario Lead Destino',
-            'id_usuario_lead_origen' => 'Id Usuario Lead Origen',
+            'id_usuario_lead_destino' => 'Atendiendo',
+            'id_usuario_lead_origen' => 'Recibidos',
             'txt_descripcion' => 'Txt Descripcion',
             'txt_nombre_contacto' => 'Txt Nombre Contacto',
             'txt_numero_contacto' => 'Txt Numero Contacto',
-            'fch_creacion' => 'Fch Creacion',
+            'fch_creacion' => 'Fecha',
             'fch_atencion_lead' => 'Fch Atencion Lead',
             'b_habilitado' => 'B Habilitado',
+            'b_atendido' => 'Atendido',
+            'enviadoNombre'=>'Nombre'
         ];
     }
 
@@ -71,7 +75,7 @@ class EntLeads extends \yii\db\ActiveRecord
      */
     public function getIdUsuarioLeadDestino()
     {
-        return $this->hasOne(ModUsuariosEntUsuarios::className(), ['id_usuario' => 'id_usuario_lead_destino']);
+        return $this->hasOne(EntUsuarios::className(), ['id_usuario' => 'id_usuario_lead_destino']);
     }
 
     /**
@@ -79,7 +83,7 @@ class EntLeads extends \yii\db\ActiveRecord
      */
     public function getIdUsuarioLeadOrigen()
     {
-        return $this->hasOne(ModUsuariosEntUsuarios::className(), ['id_usuario' => 'id_usuario_lead_origen']);
+        return $this->hasOne(EntUsuarios::className(), ['id_usuario' => 'id_usuario_lead_origen']);
     }
 
     public function getByToken($token){

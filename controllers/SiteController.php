@@ -12,6 +12,8 @@ use app\models\ContactForm;
 use app\modules\ModUsuarios\models\EntUsuarios;
 use app\models\EntLeads;
 use app\modules\ModUsuarios\models\Utils;
+use yii\data\ActiveDataProvider;
+use app\models\EntLeadsSearch;
 
 class SiteController extends Controller
 {
@@ -25,6 +27,7 @@ class SiteController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
+                    'dash-board',
                     'logout',
                     'ver-leads',
                     'add-lead',
@@ -33,6 +36,7 @@ class SiteController extends Controller
                 'rules' => [
                     [
                         'actions' => [
+                            'dash-board',                    
                             'logout',
                             'ver-leads',
                             'add-lead',
@@ -136,5 +140,151 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+
+    /**
+    * Dashboard
+    */
+    public function actionDashBoard(){
+        
+        $idUsuario = Yii::$app->user->identity->id_usuario;
+
+        $searchModel = new EntLeadsSearch();
+        $leadsEnviados = $searchModel->searchLeadsEnviados(Yii::$app->request->queryParams, $idUsuario);
+        $leadsRecibidos = $searchModel->searchMisLeads(Yii::$app->request->queryParams, $idUsuario);
+     
+        $leadsPendientes = new ActiveDataProvider([
+            'query' => EntLeads::find()->where(['id_usuario_lead_destino'=>$idUsuario, "b_atendido"=>0]),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
+        $leadsCompletos = new ActiveDataProvider([
+            'query' => EntLeads::find()->where(['id_usuario_lead_destino'=>$idUsuario, "b_atendido"=>1]),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
+
+
+        return $this->render("dash-board", [
+            'leadsEnviados'=>$leadsEnviados,
+            'leadsPendientes'=>$leadsPendientes,
+            'leadsCompletos'=>$leadsCompletos,
+            'searchModel'=>$searchModel,
+            'leadsRecibidos'=>$leadsRecibidos
+        ]);
+    }
+
+    public function actionListAddLead(){
+        $idUser = Yii::$app->user->identity->id_usuario;
+        $empresas = EntUsuarios::find()->where(['b_habilitado'=>1])->andWhere(['!=', 'id_usuario', $idUser])->orderBy('txt_username')->all();
+        return $this->render("list-add-lead", [
+            'empresas' => $empresas
+        ]);
+    }
+
+    public function actionGetLead(){
+
+        return $this->render("get-lead");
+    }
+
+    public function actionAddLead(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $lead = new EntLeads();
+        $idUser = Yii::$app->user->identity->id_usuario;
+
+        if(isset($_POST['telefono']) && isset($_POST['nombre']) && isset($_POST['descripcion']) && isset($_POST['destino'])){
+            $lead->id_usuario_lead_destino = $_POST['destino'];
+            $lead->id_usuario_lead_origen = $idUser;
+            $lead->txt_descripcion = $_POST['descripcion'];
+            $lead->txt_token = "lead_" . md5 ( uniqid ( "lead_" ) ) . uniqid ();;
+            $lead->txt_nombre_contacto = $_POST['nombre'];
+            $lead->txt_numero_contacto = $_POST['telefono'];
+            $lead->b_habilitado = 1;
+
+            if($lead->save()){
+                if($this->primerEmail($lead->txt_token)){
+                    return ['status'=>'success'];
+                }
+            }else{
+                return ['status'=>'error'];
+            }
+        }
+    }
+
+    private function primerEmail($token = null){
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->one();
+        $user = EntUsuarios::find()->where(['id_usuario'=>$lead->id_usuario_lead_destino])->one();
+
+        // Enviar correo de activación
+		$utils = new Utils();
+		// Parametros para el email
+		$parametrosEmail = [
+            'url' => Yii::$app->urlManager->createAbsoluteUrl(['modUsuarios/site/ver-leads?token=' . $lead->txt_token ]),
+		    'user' => $user->getNombreCompleto(),
+            'nombre_contacto' => $lead->txt_nombre_contacto,
+            'numero_contacto' => $lead->txt_numero_contacto,
+            'descripcion' => $lead->txt_descripcion
+        ];
+
+		// Envio de correo electronico
+		if($utils->sendPrimerEmail($user->txt_email,$parametrosEmail)){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function actionVerLeads($token = null){
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->andWhere(['b_habilitado'=>1])->one();
+        $idUser = Yii::$app->user->identity->id_usuario;
+
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax("view-lead",[
+                'lead' => $lead,
+                'idUser' => $idUser
+            ]);     
+        }
+
+        return $this->render("view-lead",[
+            'lead' => $lead,
+            'idUser' => $idUser
+        ]);        
+    }
+
+    public function actionAtenderLead($token = null){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $lead = EntLeads::find()->where(['txt_token'=>$token])->andWhere(['b_habilitado'=>1])->one();
+        $user = EntUsuarios::find()->where(['id_usuario'=>$lead->id_usuario_lead_origen])->one();
+
+        if($lead){
+            $lead->b_atendido = 1;
+            $lead->fch_atencion_lead = date('Y-m-d g:i:s');
+            if($lead->save()){
+                // Enviar correo de activación
+                $utils = new Utils();
+                // Parametros para el email
+                $parametrosEmail = [
+                    'user' => $user->getNombreCompleto(),
+                    'nombre_contacto' => $lead->txt_nombre_contacto,
+                    'numero_contacto' => $lead->txt_numero_contacto,
+                    'descripcion' => $lead->txt_descripcion
+                ];
+
+                // Envio de correo electronico
+                if($utils->sendEmailAtendido($user->txt_email,$parametrosEmail)){
+
+                    return [
+                        'status' => 'success'
+                    ];
+                }
+            }
+        }
+        return [
+            'status' => 'error'
+        ]; 
     }
 }

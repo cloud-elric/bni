@@ -160,6 +160,33 @@ body{
     padding: 3px;
 }
 
+/**************Dash board****************/
+.lead-primary, .lead-warning, .lead-success {
+    text-align:center;
+}
+
+
+.lead-primary{
+    background:#62a8ea;
+}
+
+.lead-success{
+    background:#46be8a;
+}
+.lead-warning{
+    background:#f2a654;
+}
+
+.lead-primary .panel-body, .lead-warning .panel-body, .lead-success .panel-body {
+    color:white;
+}
+
+.lead-primary .text-title-lead, .lead-warning .text-title-lead, .lead-success .text-title-lead {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
 /************* Lista empresas****************/
 .profile-empresa{
     width: 100px;
